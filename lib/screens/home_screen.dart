@@ -1,6 +1,9 @@
+import 'package:cours_iage_2025/models/options.dart';
+import 'package:cours_iage_2025/models/transaction.dart';
 import 'package:cours_iage_2025/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,6 +15,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isVisible = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadJiffy();
+  }
+
+  loadJiffy() async {
+    await Jiffy.setLocale('fr_FR');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,47 +127,67 @@ class _HomeScreenState extends State<HomeScreen> {
                   Column(
                     children: [
                       cardWidget(),
-                      GridView(
+                      GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 4,
                         ),
                         shrinkWrap: true,
-                        children: [
-                          Column(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Constants.primaryColor.withOpacity(.2),
-                                  borderRadius: BorderRadius.circular(45),
+                        itemCount: Option.optionList.length,
+                        itemBuilder: (context, index) {
+                          Option o = Option.optionList[index];
+                          return optionWidget(option: o);
+                        },
+                      ),
+                      Divider(
+                        color: Colors.grey.withValues(alpha: .2),
+                        thickness: 5,
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: Transaction.transList.length,
+                        itemBuilder: (context, index) {
+                          Transaction t = Transaction.transList[index];
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      t.title,
+                                      style: GoogleFonts.montserrat(
+                                        color: Constants.primaryColor,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${t.amount}F",
+                                      style: GoogleFonts.montserrat(
+                                        color: Constants.primaryColor,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                child: Icon(
-                                  Icons.person,
-                                  size: 35,
-                                  color: Constants.primaryColor,
+                                SizedBox(height: 5),
+                                Text(
+                                  Jiffy.parseFromDateTime(
+                                    t.dateTime,
+                                  ).format(pattern: "dd MMM yyyy à HH:mm"),
+                                  style: GoogleFonts.montserrat(
+                                    color: Colors.grey,
+                                  ),
                                 ),
-                              ),
-                              Text("Transfert"),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.orange.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(45),
-                                ),
-                                child: Icon(
-                                  Icons.shopping_cart,
-                                  size: 35,
-                                  color: Colors.orange,
-                                ),
-                              ),
-                              Text("Paiements"),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -226,6 +259,22 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+      ],
+    );
+  }
+
+  Widget optionWidget({required Option option}) {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: option.color.withValues(alpha: .2),
+            borderRadius: BorderRadius.circular(45),
+          ),
+          child: Icon(option.icon, size: 30, color: option.color),
+        ),
+        Text(option.title),
       ],
     );
   }
