@@ -2,6 +2,8 @@ import 'package:camera/camera.dart';
 import 'package:cours_iage_2025/main.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/card_widget.dart';
+
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
 
@@ -48,44 +50,64 @@ class _ScanScreenState extends State<ScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Stack(
-          children: [
-            AspectRatio(
-              aspectRatio: MediaQuery.of(context).size.aspectRatio,
-              child: CameraPreview(cameraController),
-            ),
-            Container(
-              padding: const EdgeInsets.only(top: 40.0),
-              margin: EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Icon(Icons.clear, color: Colors.white),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isFlashOn = !isFlashOn;
-                      });
-                      cameraController.setFlashMode(
-                        isFlashOn ? FlashMode.torch : FlashMode.off,
-                      );
-                    },
-                    child: Icon(
-                      isFlashOn ? Icons.flash_off : Icons.flash_on,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+      body: PageView(
+        children: [
+          cameraWidget(),
+          Container(
+            color: Colors.white,
+            child: RotatedBox(
+              quarterTurns: 1,
+              child: CardWidget(
+                width: 500,
+                height: 300,
+                iconSize: 80,
+                showText: false,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget cameraWidget() {
+    return Center(
+      child: Stack(
+        children: [
+          AspectRatio(
+            aspectRatio: MediaQuery.of(context).size.aspectRatio,
+            child: CameraPreview(cameraController),
+          ),
+          Container(
+            padding: const EdgeInsets.only(top: 40.0),
+            margin: EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(Icons.clear, color: Colors.white),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isFlashOn = !isFlashOn;
+                    });
+                    cameraController.setFlashMode(
+                      isFlashOn ? FlashMode.torch : FlashMode.off,
+                    );
+                  },
+                  child: Icon(
+                    isFlashOn ? Icons.flash_off : Icons.flash_on,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
