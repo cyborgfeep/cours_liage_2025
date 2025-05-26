@@ -8,6 +8,7 @@ class CardWidget extends StatefulWidget {
   final double? height;
   final double? iconSize;
   final bool? showText;
+  final bool? isClickable;
 
   const CardWidget({
     super.key,
@@ -15,6 +16,7 @@ class CardWidget extends StatefulWidget {
     this.height,
     this.iconSize,
     this.showText = true,
+    this.isClickable = true,
   });
 
   @override
@@ -26,11 +28,13 @@ class _CardWidgetState extends State<CardWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => ScanScreen()),
-          (route) => true,
-        );
+        if (widget.isClickable!) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => ScanScreen()),
+            (route) => true,
+          );
+        }
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

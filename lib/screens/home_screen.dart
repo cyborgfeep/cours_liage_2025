@@ -1,6 +1,7 @@
 import 'package:cours_iage_2025/models/options.dart';
 import 'package:cours_iage_2025/models/transaction.dart';
 import 'package:cours_iage_2025/screens/scan_screen.dart';
+import 'package:cours_iage_2025/screens/transaction_screen.dart';
 import 'package:cours_iage_2025/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -207,18 +208,32 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget optionWidget({required Option option}) {
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: option.color.withValues(alpha: .2),
-            borderRadius: BorderRadius.circular(45),
+    return GestureDetector(
+      onTap: () {
+        if (option.title == "Transfert" || option.title == "Crédit") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return TransactionScreen(menu: option.title);
+              },
+            ),
+          );
+        }
+      },
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: option.color.withValues(alpha: .2),
+              borderRadius: BorderRadius.circular(45),
+            ),
+            child: Icon(option.icon, size: 30, color: option.color),
           ),
-          child: Icon(option.icon, size: 30, color: option.color),
-        ),
-        Text(option.title),
-      ],
+          Text(option.title),
+        ],
+      ),
     );
   }
 }
